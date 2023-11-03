@@ -2,28 +2,24 @@ import { useState } from "react";
 import "./Carousel.css";
 import Card from "./Card";
 
-
-/** Carousel: displays images and arrows to navigate through them
- * 
- * Props:
- * - photos: array of {src, caption} objects
- * - title: string describing the collection of images
- * 
- * State:
- * - currCardIdx: integer for current card index
- * 
- * App --> Carousel --> Card
- */
- function Carousel({ photos, title }) {
+function Carousel({ photos, title }) {
   const [currCardIdx, setCurrCardIdx] = useState(0);
-
-  const currCard = photos[currCardIdx];
   const total = photos.length;
 
-  //Increments currCardIdx state by 1
+  const currCard = photos[currCardIdx];
+
+  // Function to increment currCardIdx
   function goForward() {
-    setCurrCardIdx(currCardIdx + 1);
+    setCurrCardIdx((currCardIdx + 1) % total);
   }
+
+  // Function to decrement currCardIdx
+  function goBackward() {
+    setCurrCardIdx((currCardIdx - 1 + total) % total);
+  }
+
+  const isAtFirstImage = currCardIdx === 0;
+  const isAtLastImage = currCardIdx === total - 1;
 
   return (
     <div className="Carousel">
@@ -31,7 +27,8 @@ import Card from "./Card";
       <div className="Carousel-main">
         <i
           className="bi bi-arrow-left-circle"
-          onClick={goForward}
+          onClick={goBackward}
+          style={{ visibility: isAtFirstImage ? "hidden" : "visible" }}
         />
         <Card
           caption={currCard.caption}
@@ -42,6 +39,7 @@ import Card from "./Card";
         <i
           className="bi bi-arrow-right-circle"
           onClick={goForward}
+          style={{ visibility: isAtLastImage ? "hidden" : "visible" }}
         />
       </div>
     </div>
